@@ -31,3 +31,10 @@ Desktop.ini
 *.orig
 *.rej
 *.~
+
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.gz
+*.class
