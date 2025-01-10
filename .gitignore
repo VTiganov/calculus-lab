@@ -32,6 +32,7 @@ Desktop.ini
 *.rej
 *.~
 
+#tex trash
 *.aux
 *.fdb_latexmk
 *.fls
