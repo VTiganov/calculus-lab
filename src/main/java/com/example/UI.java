@@ -34,7 +34,7 @@ public class UI {
     }
 
     private static void findRootUsingDichotomy(Scanner scanner) {
-        System.out.println("Введите функцию f(x) (например, Math.pow(x, 3) для x^3):");
+        System.out.println("Введите функцию f(x) (x*x*x - 4*x - 9 точно работает):");
         String function = scanner.nextLine();
 
         float a = getFloatInput(scanner, "Введите начальную точку a:");
