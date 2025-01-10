@@ -12,8 +12,18 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <!-- exp4j: библиотека для математических выражений -->
+        <dependency>
+            <groupId>net.objecthunter</groupId>
+            <artifactId>exp4j</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
+            <!-- Компилятор Maven -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -23,6 +33,8 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <!-- JAR-плагин для создания исполняемого JAR файла -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -30,10 +42,33 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.UI</mainClass>
+                            <mainClass>com.example.UI</mainClass> <!-- Укажите главный класс вашего приложения -->
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+
+            <!-- Плагин для создания "uber JAR" с зависимостями -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.example.UI</mainClass> <!-- Главный класс приложения -->
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
