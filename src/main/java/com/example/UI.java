@@ -68,7 +68,7 @@ public class UI {
 
         float a = getFloatInput(scanner, "Введите начальную точку a:");
         float b = getFloatInput(scanner, "Введите конечную точку b:");
-        float tolerance = getFloatInput(scanner, "Введите точность (например, 0.001):");
+        float tolerance = getFloatInput(scanner, "Введите точность (например, 0.001 или 0,001):");
 
         if (a >= b) {
             System.out.println("Ошибка: начальная точка a должна быть меньше конечной точки b.");
