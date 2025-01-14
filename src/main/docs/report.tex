@@ -4,6 +4,33 @@
 \usepackage[russian,english]{babel}
 \usepackage{geometry}
 \usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinestyle{JavaStyle}{
+    language=Java,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{green}\ttfamily,
+    morecomment=[s][\color{green}]{/*}{*/},
+    numbers=left,
+    numberstyle=\small\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black},
+    tabsize=1,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=false,
+    escapeinside={\%*}{*)}
+}
+
 
 \geometry{a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm}
 
@@ -64,6 +91,6 @@
 
 \include{goalTasks}
 \include{theory}
-
+\include{implementation}
 
 \end{document}
