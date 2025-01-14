@@ -6,6 +6,12 @@ codefiles in ``` src/main/java/com/example ```
 
 \
 \
+to compile package via maven
+```sh
+mvn compile
+mvn package
+java -jar target/calculus-lab-1.0-SNAPSHOT.jar
+```
 to run tests: 
 ```sh
 mvn clean test
@@ -13,8 +19,6 @@ mvn clean test
 \
 to run the code:
 ```sh
-mvn compile
-mvn package
-java -jar target/calculus-lab-1.0-SNAPSHOT.jar
+java -jar calculus-lab-1.0-SNAPSHOT.jar
 ```
 
