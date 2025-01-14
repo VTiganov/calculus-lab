@@ -18,4 +18,3 @@ mvn package
 java -jar target/calculus-lab-1.0-SNAPSHOT.jar
 ```
 
-### !!! Пока что пишем все функции и тесты, потом сделаем входную точку с console ui и переделаем билд в maven.

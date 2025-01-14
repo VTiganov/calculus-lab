@@ -1,18 +1,19 @@
 package com.example;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
-                System.out.println("Выберите задачу:");
-                System.out.println("1. Найти корень функции методом дихотомии");
-                System.out.println("2. Найти корни уравнения f(x)=0 для заданной функции и промежутка поиска");
-                System.out.println("3. Выйти");
+                System.out.println("Select a task:");
+                System.out.println("1. Find the root of a function using the dichotomy method");
+                System.out.println("2. Find the roots of the equation f(x)=0 for a given function and interval");
+                System.out.println("3. Exit");
 
                 if (!scanner.hasNextInt()) {
-                    System.out.println("Пожалуйста, введите номер задачи.");
+                    System.out.println("Please enter the task number.");
                     scanner.next();
                     continue;
                 }
@@ -25,61 +26,67 @@ public class UI {
                         findRootUsingDichotomy(scanner);
                         break;
                     case 2:
-                        findRootAndCalculateRMS(scanner);
+                        findRootsAndCalculateRMS(scanner);
                         break;
                     case 3:
-                        System.out.println("Выход из программы.");
+                        System.out.println("Exiting the program.");
                         return;
                     default:
-                        System.out.println("Неверный выбор. Попробуйте снова.");
+                        System.out.println("Invalid choice. Please try again.");
                 }
             }
         }
     }
 
-    private static void findRootAndCalculateRMS(Scanner scanner) {
-        System.out.println("Введите функцию f(x) (x*x*x - 4*x - 9 точно работает):");
+    private static void findRootsAndCalculateRMS(Scanner scanner) {
+        System.out.println("Enter the function f(x) (x*x*x - 4*x - 9 works perfectly):");
         String function = scanner.nextLine();
 
-        double a = getDoubleInput(scanner, "Введите начальную точку a:");
-        double b = getDoubleInput(scanner, "Введите конечную точку b:");
-        double epsilon = getDoubleInput(scanner, "Введите точность (например, 0.001):");
-        double trueRoot = getDoubleInput(scanner, "Введите истинный корень:");
+        double a = getDoubleInput(scanner, "Enter the starting point a:");
+        double b = getDoubleInput(scanner, "Enter the ending point b:");
+        double epsilon = getDoubleInput(scanner, "Enter the precision (e.g., 0.001):");
+        double trueRoot = getDoubleInput(scanner, "Enter the true root:");
 
         if (a >= b) {
-            System.out.println("Ошибка: начальная точка a должна быть меньше конечной точки b.");
+            System.out.println("Error: the starting point a must be less than the ending point b.");
             return;
         }
 
         try {
-            double root = Task2.findRoot(function, a, b, epsilon);
-            System.out.println("Корень функции приблизительно: " + root);
-
-            double rms = Task2.calculateRMS(root, trueRoot);
-            System.out.println("RMS: " + rms);
+            List<Double> roots = Task2.findRoots(function, a, b, epsilon);
+            if (roots.isEmpty()) {
+                System.out.println("No roots found in the specified interval.");
+            } else {
+                System.out.println("Approximate roots of the function:");
+                for (double root : roots) {
+                    System.out.println(root);
+                    double rms = Task2.calculateRMS(root, trueRoot);
+                    System.out.println("RMS: " + rms);
+                }
+            }
         } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
     private static void findRootUsingDichotomy(Scanner scanner) {
-        System.out.println("Введите функцию f(x) (x*x*x - 4*x - 9 точно работает):");
+        System.out.println("Enter the function f(x) (x*x*x - 4*x - 9 works perfectly):");
         String function = scanner.nextLine();
 
-        float a = getFloatInput(scanner, "Введите начальную точку a:");
-        float b = getFloatInput(scanner, "Введите конечную точку b:");
-        float tolerance = getFloatInput(scanner, "Введите точность (например, 0.001 или 0,001):");
+        float a = getFloatInput(scanner, "Enter the starting point a:");
+        float b = getFloatInput(scanner, "Enter the ending point b:");
+        float tolerance = getFloatInput(scanner, "Enter the precision (e.g., 0.001 or 0,001):");
 
         if (a >= b) {
-            System.out.println("Ошибка: начальная точка a должна быть меньше конечной точки b.");
+            System.out.println("Error: the starting point a must be less than the ending point b.");
             return;
         }
 
         try {
             float root = Task1.dichotomyMethod(function, a, b, tolerance);
-            System.out.println("Корень функции приблизительно: " + root);
+            System.out.println("Approximate root of the function: " + root);
         } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -91,7 +98,7 @@ public class UI {
                 scanner.nextLine();
                 return value;
             } else {
-                System.out.println("Пожалуйста, введите действительное число.");
+                System.out.println("Please enter a real number.");
                 scanner.next();
             }
         }
@@ -105,7 +112,7 @@ public class UI {
                 scanner.nextLine();
                 return value;
             } else {
-                System.out.println("Пожалуйста, введите действительное число.");
+                System.out.println("Please enter a real number.");
                 scanner.next();
             }
         }

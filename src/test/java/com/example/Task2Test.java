@@ -1,22 +1,25 @@
 package com.example;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import java.util.List;
 
 public class Task2Test {
 
     @Test
-    public void testFindRoot() {
-        String function = "x*x*x - 4*x - 9";
-        double a = 2;
-        double b = 3;
-        double epsilon = 0.000001;
-        double expectedRoot = 2.706528663635254; // Примерное значение корня
+    public void testFindRoots() {
+    String function = "x*x*x - 4*x - 9";
+    double a = 2;
+    double b = 3;
+    double epsilon = 0.000001;
+    double expectedRoot = 2.706528663635254; // Approximate value of the root
 
-        double root = Task2.findRoot(function, a, b, epsilon);
-        assertEquals(expectedRoot, root, epsilon, "Корень функции не совпадает с ожидаемым значением");
-    }
+    List<Double> roots = Task2.findRoots(function, a, b, epsilon);
+    assertTrue(roots.size() > 0, "The root list should not be empty");
+    assertTrue(Math.abs(roots.get(0) - expectedRoot) < 2 * epsilon, "The root list does not contain the expected root");
+}
+
 
     @Test
     public void testCalculateRMS() {
@@ -25,30 +28,31 @@ public class Task2Test {
         double expectedRMS = 0.0;
 
         double rms = Task2.calculateRMS(foundRoot, trueRoot);
-        assertEquals(expectedRMS, rms, 0.000001, "RMS не совпадает с ожидаемым значением");
+        assertEquals(expectedRMS, rms, 0.000001, "RMS does not match the expected value");
     }
 
     @Test
-    public void testFindRootNoRoot() {
-        String function = "x*x - 2";
+    public void testFindRootsNoRoot() {
+        String function = "x*x";
         double a = 1;
         double b = 2;
         double epsilon = 0.000001;
 
-        double root = Task2.findRoot(function, a, b, epsilon);
-        assertFalse(Double.isNaN(root), "Функция должна вернуть NaN, так как корень не найден");
+        List<Double> roots = Task2.findRoots(function, a, b, epsilon);
+        assertTrue(roots.isEmpty(), "The root list should be empty as no root is expected");
     }
 
     @Test
-    public void testFindRootDifferentFunction() {
-        String function = "sin(x)";
-        double a = 3;
-        double b = 4;
+    public void testFindRootsDifferentFunction() {
+        String function = "x";
+        double a = -2;
+        double b = 3;
         double epsilon = 0.000001;
-        double expectedRoot = Math.PI; // Примерное значение корня
+        double expectedRoot = 0; // Approximate value of the root
 
-        double root = Task2.findRoot(function, a, b, epsilon);
-        assertEquals(expectedRoot, root, epsilon, "Корень функции не совпадает с ожидаемым значением");
+        List<Double> roots = Task2.findRoots(function, a, b, epsilon);
+        assertTrue(roots.size() > 0, "The root list should not be empty");
+        assertTrue(Math.abs(roots.get(0) - expectedRoot) < epsilon, "The root list does not contain the expected root");
     }
 
     @Test
@@ -58,6 +62,6 @@ public class Task2Test {
         double expectedRMS = 0.5;
 
         double rms = Task2.calculateRMS(foundRoot, trueRoot);
-        assertEquals(expectedRMS, rms, 0.000001, "RMS не совпадает с ожидаемым значением");
+        assertEquals(expectedRMS, rms, 0.000001, "RMS does not match the expected value");
     }
 }

@@ -1,0 +1,137 @@
+\textbf{Этап реализации алгоритмов}
+\vspace{1cm}
+
+\textbf{Задание 1, метод Дихотомии}\\
+
+Коротко про реализацию на выбранном языке программирования:
+\\
+
+Главная функция, поиск экстремума:
+
+\begin{lstlisting}[style=JavaStyle, caption={Java Code for Dichotomy Method}]
+public static float dichotomyMethod(String expression, float a, float b, float tolerance) {
+    if (func(expression, a) * func(expression, b) > 0) {
+        throw new IllegalArgumentException("f(a) and f(b) must have opposite signs!");
+    }
+
+    float c;
+    XYSeries series = new XYSeries("Iterations");
+    ArrayList<Float> intervalLengths = new ArrayList<>();
+
+    while ((b - a) / 2.0 > tolerance) {
+        c = (a + b) / 2;
+        series.add(c, func(expression, c));
+
+        intervalLengths.add((b - a));
+
+        if (func(expression, c) == 0) {
+            return c;
+        } else if (func(expression, c) * func(expression, a) < 0) {
+            b = c;
+        } else {
+            a = c;
+        }
+    }
+
+    series.add((a + b) / 2, func(expression, (a + b) / 2));
+
+    showGraph(series);
+
+    plotIntervalLengths(intervalLengths);
+
+    return (a + b) / 2;
+}
+    \end{lstlisting}
+
+Определяется функция dichotomyMethod, которая принимает в себя следующие аргументы:
+введенную пользователем функцию, правую и левую границы интересующей области, (float для
+большей точности, чтобы не ограничиваться целыми числами) точность работы.\\
+
+Согласно алгоритму, концы интересующего отрезка должны иметь противоположные знаки,
+поэтому обрабатываем исключение вв противном случае.\\
+
+XY серии и список с длинами интервала понадобится далее для построения графиков.\\
+
+Тело функции - цикл. Пока находимся в рамках погрешности, введенной пользователем,
+смотрим в середину отрезка, добавляем ее в список возможных экстремумов, также добавляем 
+в свой список длину текущего интервала.\\
+Далее все по алгоритму, если попали в ноль, то экстремум найден. Если нет, то оцениваем знаки
+и сдвигаем границы области поиска.\\
+В конце, когда вышли за пределы точности, добавляем последнюю найденную точку для отображения на графике,
+возвращаем ее же как ответ и рисуем график со всеми промежуточными значениями, а также длинами интервалов при 
+итерациях.
+\begin{center}
+    \textit{Полный код c пояснениями см. в приложениях.}
+\end{center}
+\vspace{1cm}
+
+\textbf{Задание 2, решение уравнения}\\
+
+\begin{lstlisting}[style=JavaStyle, caption={Java Code for Finding Multiple Roots}]
+public static List<Double> findRoots(String function, double a, double b, double epsilon) {
+    Expression expression = new ExpressionBuilder(function)
+            .variables("x")
+            .build();
+
+    List<Double> roots = new ArrayList<>();
+    double step = epsilon;
+
+    for (double x = a; x <= b; x += step) {
+        if (f(expression, x) * f(expression, x + step) < 0) {
+            double root = findRootInInterval(expression, x, x + step, epsilon);
+            roots.add(root);
+        }
+    }
+
+    return roots;
+}
+
+private static double findRootInInterval(Expression expression, double a, double b, double epsilon) {
+    if (f(expression, a) * f(expression, b) >= 0) {
+        return Double.NaN;
+    }
+
+    double c = a;
+    int iterations = 0;
+
+    while ((b - a) >= epsilon) {
+        c = (a + b) / 2;
+        if (f(expression, c) == 0.0) {
+            break;
+        } else if (f(expression, c) * f(expression, a) < 0) {
+            b = c;
+        } else {
+            a = c;
+        }
+        iterations++;
+    }
+
+    System.out.println("Number of iterations: " + iterations);
+    return c;
+}
+    \end{lstlisting}
+Для данного задания пришлось реализовать сразу две функции. Главную, которая будет выводить и
+собирать все найденные корни и функцию поиска корня на каждом из отрезков. (вторая функция действует
+по принципу дихотомии, пояснено в предыдущем задании)\\
+
+В первой функции поиска всех корней инициализируем математическую функцию с помощью
+библиотеки-билдера специально для этой задачи. ($ExpressionBuilder$)\\
+
+Инициализируем список корней, инициализируем шаг размера $\epsilon$ для \textit{"передвижения"} по интервалу.\\
+
+\begin{lstlisting}[style=JavaStyle, caption={Java Code, Main cycle}]
+for (double x = a; x <= b; x += step) {
+        if (f(expression, x) * f(expression, x + step) < 0) {
+            double root = findRootInInterval(expression, x, x + step, epsilon);
+            roots.add(root);
+        }
+    }
+\end{lstlisting}
+Далее в цикле: если знаки на концах различны, следовательно, есть корень,
+вызываем функцию поиска корня на отрезке и заносим найденный корень в список корней.
+Возвращаем список корней.\\
+Задача выполнена.
+\begin{center}
+    \textit{Реализован вывод всех найденных корней и отклонения для каждого из них,\\
+    полный код см. в приложении}
+\end{center}

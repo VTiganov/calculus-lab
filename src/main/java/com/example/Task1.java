@@ -28,7 +28,7 @@ public class Task1 {
 
     public static float dichotomyMethod(String expression, float a, float b, float tolerance) {
         if (func(expression, a) * func(expression, b) > 0) {
-            throw new IllegalArgumentException("Значения функции в точках a и b должны иметь противоположные знаки.");
+            throw new IllegalArgumentException("f(a) and f(b) must have opposite signs!");
         }
 
         float c;
