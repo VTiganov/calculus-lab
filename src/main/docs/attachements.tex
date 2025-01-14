@@ -1,0 +1,205 @@
+\begin{center}
+    ПРИЛОЖЕНИЯ\\
+    \textit{Все еще не научился писать в листинге на русском, переведено с помощью ChatGPT}
+\end{center}
+
+\begin{lstlisting}[style=JavaStyle, caption={Java Code for Task1}]
+package com.example;
+
+public class Task1 {
+
+    // Calculates the value of the given expression for a specific x
+    public static float func(String expression, float x) {
+        Expression e = new ExpressionBuilder(expression) // Build the mathematical expression using exp4j
+                .variable("x")       // Define the variable "x"
+                .build()             // Compile the expression
+                .setVariable("x", x); // Set the value of "x"
+        return (float) e.evaluate();   // Evaluate and return the result
+    }
+
+    // Implements the dichotomy method to find the root of the equation
+    public static float dichotomyMethod(String expression, float a, float b, float tolerance) {
+        if (func(expression, a) * func(expression, b) > 0) {
+            // Check if the root exists within the interval [a, b]
+            throw new IllegalArgumentException("f(a) and f(b) must have opposite signs!");
+        }
+
+        float c; // Midpoint of the interval
+        XYSeries series = new XYSeries("Iterations"); // Create a series to store iteration data
+        ArrayList<Float> intervalLengths = new ArrayList<>(); // List to store interval lengths
+
+        // Continue iterating until the interval size is less than the tolerance
+        while ((b - a) / 2.0 > tolerance) {
+            c = (a + b) / 2;  // Compute the midpoint
+            series.add(c, func(expression, c));  // Add the midpoint and its function value to the series
+
+            intervalLengths.add((b - a));   // Record the current interval length
+
+            if (func(expression, c) == 0) {   // Check if an exact root is found
+                return c;
+            } else if (func(expression, c) * func(expression, a) < 0) {
+                b = c;   // Update the upper bound
+            } else {
+                a = c;  // Update the lower bound
+            }
+        }
+
+        series.add((a + b) / 2, func(expression, (a + b) / 2)); // Add the final midpoint
+
+        showGraph(series); // Display the graph of the function values
+        plotIntervalLengths(intervalLengths); // Display the interval length convergence graph
+
+        return (a + b) / 2; // Return the approximate root
+    }
+
+    // Displays a graph of the function values across iterations
+    public static void showGraph(XYSeries series) {
+        SwingUtilities.invokeLater(() -> {
+            XYSeriesCollection dataset = new XYSeriesCollection(series); // Create a dataset for the series
+
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    "Estimated position of extremum", // Title of the chart
+                    "x",   // Label for the X-axis
+                    "f(x)",   // Label for the Y-axis
+                    dataset,   // Data for the chart
+                    PlotOrientation.VERTICAL,   // Chart orientation
+                    true,   // Show legend
+                    true,   // Enable tooltips
+                    false                              
+            );
+
+            XYPlot plot = chart.getXYPlot();
+            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, true); // Configure renderer for lines and shapes
+
+            renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(-6, -6, 10, 10)); // Set point shapes
+            renderer.setSeriesPaint(0, Color.BLACK); // Set line color
+            renderer.setSeriesStroke(0, new BasicStroke(1.0f)); // Set line thickness
+
+            plot.setRenderer(renderer);
+
+            ChartPanel chartPanel = new ChartPanel(chart); // Create a chart panel
+            chartPanel.setPreferredSize(new java.awt.Dimension(800, 600)); // Set panel size
+
+            JFrame frame = new JFrame("Graph"); // Create a JFrame to hold the chart
+            frame.getContentPane().add(chartPanel, BorderLayout.CENTER); // Add chart panel to frame
+            frame.pack(); // Adjust frame size to fit content
+            frame.setVisible(true); // Display the frame
+        });
+    }
+
+    // Plots the interval lengths across iterations
+    public static void plotIntervalLengths(ArrayList<Float> intervalLengths) {
+        SwingUtilities.invokeLater(() -> {
+            XYSeries intervalSeries = new XYSeries("Interval Lengths"); // Create a series for interval lengths
+            for (int i = 0; i < intervalLengths.size(); i++) {
+                intervalSeries.add(i + 1, intervalLengths.get(i)); // Add each interval length with its iteration index
+            }
+
+            XYSeriesCollection dataset = new XYSeriesCollection(intervalSeries); // Create a dataset for the series
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    "Interval Length vs Iteration", 
+                    "Iteration",                    
+                    "Interval Length",              
+                    dataset,                         
+                    PlotOrientation.VERTICAL,        
+                    true,
+                    true,   
+                    false                        
+            );
+
+            XYPlot plot = chart.getXYPlot();
+            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, false);
+            renderer.setSeriesStroke(0, new BasicStroke(5.0f));
+
+            plot.setRenderer(renderer);
+
+            ChartPanel chartPanel = new ChartPanel(chart);
+            chartPanel.setPreferredSize(new java.awt.Dimension(800, 600)); 
+
+            JFrame frame = new JFrame("Interval Lengths"); 
+            frame.getContentPane().add(chartPanel, BorderLayout.CENTER);
+            frame.pack(); 
+            frame.setVisible(true); 
+        });
+    }
+}
+
+    \end{lstlisting}
+    
+    \begin{lstlisting}[style=JavaStyle, caption={Java Code for Task2}]
+package com.example;
+
+public class Task2 {
+
+    public static List<Double> findRoots(String function, double a, double b, double epsilon) {
+        Expression expression = new ExpressionBuilder(function)
+                .variables("x")
+                .build();
+
+        List<Double> roots = new ArrayList<>();
+        double step = epsilon; // Step size for checking intervals
+
+        for (double x = a; x <= b; x += step) {
+            if (f(expression, x) * f(expression, x + step) < 0) {
+                double root = findRootInInterval(expression, x, x + step, epsilon);
+                roots.add(root);
+            }
+        }
+
+        return roots;
+    }
+
+    private static double findRootInInterval(Expression expression, double a, double b, double epsilon) {
+        if (f(expression, a) * f(expression, b) >= 0) {
+            return Double.NaN;
+        }
+
+        double c = a;
+        int iterations = 0;
+
+        while ((b - a) >= epsilon) {
+            c = (a + b) / 2;
+            if (f(expression, c) == 0.0) {
+                break;
+            } else if (f(expression, c) * f(expression, a) < 0) {
+                b = c;
+            } else {
+                a = c;
+            }
+            iterations++;
+        }
+
+        System.out.println("Number of iterations: " + iterations); // Print iteration count
+        return c;
+    }
+
+    private static double f(Expression expression, double x) {
+        expression.setVariable("x", x); // Set the variable 'x' in the expression
+        return expression.evaluate(); // Evaluate the expression and return the result
+    }
+
+    public static double calculateRMS(double foundRoot, double trueRoot) {
+        return Math.sqrt((foundRoot - trueRoot) * (foundRoot - trueRoot)); // Calculate RMS error
+    }
+}
+
+    \end{lstlisting}
+
+\begin{lstlisting}[style=JavaStyle, caption={Used Libraries}]
+import net.objecthunter.exp4j.Expression; // For evaluating mathematical expressions
+import net.objecthunter.exp4j.ExpressionBuilder; // For building expressions with variables
+import org.jfree.chart.ChartFactory; // For creating charts
+import org.jfree.chart.ChartPanel; // For embedding charts in Swing applications
+import org.jfree.chart.JFreeChart; // Represents a chart in JFreeChart library
+import org.jfree.chart.plot.PlotOrientation; // Defines the orientation of a plot (horizontal or vertical)
+import org.jfree.data.xy.XYSeries; // For storing series of XY data for plotting
+import org.jfree.data.xy.XYSeriesCollection; // A collection of XYSeries for plotting
+
+import javax.swing.*; // For GUI components like JFrame, JPanel, etc.
+import java.awt.*; // For handling graphics and layout management
+import org.jfree.chart.plot.XYPlot; // For managing the plotting of XY data
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer; // For customizing the appearance of XY plots
+import java.awt.BasicStroke; // For setting line styles in graphics
+import java.util.ArrayList; // For creating dynamic arrays (lists)
+        \end{lstlisting}
+        
